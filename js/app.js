@@ -1,9 +1,10 @@
 const arr = [];
 
 const loadProducts = (url) => {
+
    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
          arr.push(data);
          showProducts(data);
       });
@@ -13,19 +14,18 @@ loadProducts('https://fakestoreapi.com/products');
 
 // show all product in UI
 const showProducts = (products) => {
-   
+
    setInnerText('total_products', products.length);
 
    document.getElementById("all-products").innerHTML = "";
 
-   const allProducts = products.slice(0, 10).map((pd) => pd);
+   const allProducts = products.map((pd) => pd);
    for (const product of allProducts) {
-      const image = product.images;
       const div = document.createElement('div');
       div.classList.add('product');
       div.innerHTML = `<div class="single-product">
       <div>
-    <img class="product-image" src=${image}></img>
+    <img class="product-image" src=${product.image}></img>
       </div>
       <h3>${product.title}</h3>
       <p>Category: ${product.category}</p>
@@ -44,9 +44,10 @@ let count = 0;
 
 const addToCart = (id, price) => {
    count = count + 1;
-   updatePrice('price', value);
+   updatePrice('price', price);
 
    updateTaxAndCharge();
+   updateTotal();
    document.getElementById('total-Products').innerText = count;
 };
 
@@ -59,8 +60,8 @@ const showProductDetails = (product_id) => {
 
 const showProductDetailsInModal = (product_details) => {
    console.log(product_details);
-   setInnerText('exampleModalLabel', product_details.title);
-   setInnerText('product_id', product_details.id);
+   setInnerText('modal-label', product_details.title);
+   setInnerText('productId', product_details.id);
    setInnerText('modal_body', product_details.description);
    setInnerText('rating', product_details.rating.rate);
 };
@@ -81,7 +82,7 @@ const updatePrice = (id, value) => {
 
 // set innerText function
 const setInnerText = (id, value) => {
-   document.getElementById(id).innerText = Math.round(value);
+   document.getElementById(id).innerText = value;
 };
 
 // update delivery charge and total Tax
@@ -113,10 +114,10 @@ const updateTotal = () => {
 // search by category
 document.getElementById("search-btn").addEventListener("click", function () {
    const inputField = document.getElementById("input-value").value;
-   const searchedProduct = arr[0].find((p) =>
-     p.category.startsWith(`${inputField}`)
+   const searchedProduct = arr[0].filter((p) =>
+      p.category.startsWith(`${inputField}`)
    );
    showProducts(searchedProduct);
- });
+});
 
 
